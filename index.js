@@ -40,7 +40,7 @@ function init() {
 
     inquirer.prompt(questions).then((response) => {
         // Logic for shape choice being created
-        console.log(`response: ${JSON.stringify(response)}`);
+        // console.log(`response: ${JSON.stringify(response)}`);
         let theShape;
         switch(response.shape){
             case('circle'):
