@@ -4,6 +4,7 @@ const wtf = require('./lib/makeFile.js');
 const {Circle, Square, Triangle, colorCheck} = require('./lib/shapes.js');
 
 function init() {
+    // Build questions for Inquirer
     questions = [
         {   
             type: `input`,
@@ -50,7 +51,7 @@ function init() {
                 theShape = new Triangle(response); break;
         }
 
-        // Created shape is then rendered per rubric
+        // Created shape is then rendered and output to file per rubric
         wtf.writeToFile(theShape.render());
         return response;
     })
