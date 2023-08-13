@@ -1,27 +1,45 @@
 require('dotenv').config();
 const inquirer = require('inquirer');
-const filer = require('./lib/makeFile.js');
-const {Circle, Square, Triangle} = require('./lib/shapes.js');
+const wtf = require('./lib/makeFile.js');
+const {Circle, Square, Triangle, colorCheck} = require('./lib/shapes.js');
 
 function init() {
-    colorRay = filer.getColors();
-    // console.log(colorRay);
     questions = [
-        {type: `input`, message: `Enter 3 chars>> `,    name: `chars`},
-        {type: `input`, message: `Text color>> `,       name: `tcolor`},
-        {type: `list`,  message: `Shape>> `,            name: `shape`,
-                        choices: [`circle`, `square`, `triangle`]},
-        {type: `input`, message: `Shape color>> `,      name: `scolor`},];
+        {   
+            type: `input`,
+            message: `Enter 3 chars>> `,
+            name: `chars`,
+            validate: (chars)=>{
+                if(chars.length > 3) { return `Too many chars entered.  3 maximium`;}
+                return true;
+            }
+        },
+        {   
+            type: `input`,
+            message: `Text color -- must be common name or 3 or 6 digit hex (with leading #)>> `,
+            name: `tcolor`,
+            validate: (tcolor)=>{
+                return colorCheck(tcolor);
+            }
+        },
+        {
+            type: `list`,
+            message: `Shape>> `,
+            name: `shape`,
+            choices: [`circle`, `square`, `triangle`]
+        },
+        {
+            type: `input`,
+            message: `Shape color -- must be common name or 3 or 6 digit hex (with leading #)>> `,
+            name: `scolor`,
+            validate: (scolor)=>{
+                return colorCheck(scolor);
+            }
+        },];
 
     inquirer.prompt(questions).then((response) => {
-        console.log("After prompts>>> ", response);
-        if(colorRay.includes(response.tcolor)){
-            console.log('Text color ', response.tcolor, ' is in!!!');
-        }
-        if(colorRay.includes(response.scolor)){
-            console.log('Shape color ', response.scolor, ' is in!!!');
-        }
-
+        // Logic for shape choice being created
+        console.log(`response: ${JSON.stringify(response)}`);
         let theShape;
         switch(response.shape){
             case('circle'):
@@ -31,7 +49,9 @@ function init() {
             case('triangle'):
                 theShape = new Triangle(response); break;
         }
-        filer.writeToFile(theShape.render());
+
+        // Created shape is then rendered per rubric
+        wtf.writeToFile(theShape.render());
         return response;
     })
     .catch((e) => { console.log(`Inquirer had a problem :(\t>> ${e}`);});
